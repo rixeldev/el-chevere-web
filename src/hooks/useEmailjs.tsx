@@ -87,7 +87,7 @@ export function useEmailjs() {
 					})
 					setSending(false)
 					setError(true)
-					console.log(e)
+					console.error(e)
 				})
 		} catch (e) {
 			setSending(false)
@@ -101,7 +101,7 @@ export function useEmailjs() {
 			})
 			setSending(false)
 			setError(true)
-			console.log(e)
+			console.error(e)
 			throw new Error('Error sending form.')
 		}
 	}

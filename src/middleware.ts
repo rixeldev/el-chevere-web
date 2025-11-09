@@ -35,12 +35,12 @@ export const onRequest = defineMiddleware(async ({ cookies, redirect, url }, nex
 		} catch (err) {
 			// Si la cookie no es válida o está mal formada
 			cookies.delete('admin_session', { path: '/' })
-			console.log('Invalid session cookie:', err)
+			console.error('Invalid session cookie:', err)
 		}
 	}
 
 	// Redirect if already logged in
-	if (pathname === '/login' && isValidAdmin) {
+	if (pathname === '/auth' && isValidAdmin) {
 		return redirect('/admin/dashboard')
 	}
 
@@ -49,7 +49,7 @@ export const onRequest = defineMiddleware(async ({ cookies, redirect, url }, nex
 	const protectedRoutes = ['/admin/dashboard']
 	if (protectedRoutes.some((route) => pathname.startsWith(route))) {
 		if (!isValidAdmin) {
-			return redirect('/login')
+			return redirect('/auth')
 		}
 	}
 

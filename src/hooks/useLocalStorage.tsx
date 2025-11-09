@@ -3,7 +3,7 @@ export function useLocalStorage(key: string) {
 		try {
 			window.localStorage.setItem(keySet, JSON.stringify(item))
 		} catch (error) {
-			console.log(error)
+			console.error(error)
 		}
 	}
 
@@ -12,7 +12,7 @@ export function useLocalStorage(key: string) {
 			const value = window.localStorage.getItem(keyGet)
 			return value ? JSON.parse(value) : null
 		} catch (error) {
-			console.log(error)
+			console.error(error)
 		}
 	}
 
@@ -20,7 +20,7 @@ export function useLocalStorage(key: string) {
 		try {
 			window.localStorage.removeItem(keyRemove)
 		} catch (error) {
-			console.log(error)
+			console.error(error)
 		}
 	}
 
@@ -28,7 +28,7 @@ export function useLocalStorage(key: string) {
 		try {
 			return window.localStorage.getItem(keyCheck) !== null
 		} catch (error) {
-			console.log(error)
+			console.error(error)
 		}
 
 		return false

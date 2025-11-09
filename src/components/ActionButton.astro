@@ -1,6 +1,7 @@
 <button
 	{...Astro.props}
-	class='mt-4 flex w-full cursor-pointer flex-row items-center justify-center gap-2 rounded-xl border border-transparent bg-sky-600 px-3 py-2 text-lg font-bold text-primary transition active:border-sky-600 active:bg-sky-700 active:text-secondary sm:hover:border-sky-600 sm:hover:bg-sky-700 sm:hover:text-secondary'
+	class='group relative mt-4 flex w-full cursor-pointer flex-row items-center justify-center gap-2 overflow-hidden rounded-xl border border-accent/30 bg-gradient-to-r from-main to-accent px-6 py-3 text-lg font-bold text-primary shadow-lg shadow-accent/20 transition-all duration-300 hover:scale-105 hover:border-accent/60 hover:shadow-xl hover:shadow-accent/30 active:scale-95'
 >
-	<slot />
+	<span class='absolute inset-0 bg-gradient-to-r from-accent to-main opacity-0 transition-opacity duration-300 group-hover:opacity-100'></span>
+	<span class='relative z-10'><slot /></span>
 </button>

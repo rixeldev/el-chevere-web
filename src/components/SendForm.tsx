@@ -35,39 +35,39 @@ export const SendForm = ({ currentLocale }: { currentLocale?: string }) => {
 	}
 
 	return (
-		<form ref={formRef} onSubmit={handleSubmit} className='flex-1 pt-6 sm:w-full sm:pt-0'>
-			<span className='text-sm font-light italic text-slate-600'>{i18n.CONTACT_TXT_6}</span>
+		<form ref={formRef} onSubmit={handleSubmit} className='rounded-2xl border border-accent/10 bg-glass p-6 backdrop-blur-md shadow-lg'>
+			<span className='text-sm font-medium italic text-secondary'>{i18n.CONTACT_TXT_6}</span>
 
-			<div className='mt-2 flex flex-col gap-2'>
-				<label className='mb-1 inline-flex flex-col text-slate-400'>
-					{i18n.NAME}*
+			<div className='mt-4 flex flex-col gap-4'>
+				<label className='inline-flex flex-col gap-2'>
+					<span className='text-sm font-semibold text-primary'>{i18n.NAME}*</span>
 					<input
 						required
 						autoComplete='name'
-						className='h-10 rounded-lg bg-accent/10 p-2 text-primary outline-none transition-all placeholder:text-slate-500 focus:outline-1 focus:outline-main'
+						className='h-12 rounded-xl border border-accent/20 bg-back/50 px-4 text-primary outline-none transition-all duration-300 placeholder:text-secondary/50 focus:border-accent/60 focus:bg-back/70 focus:ring-2 focus:ring-accent/20'
 						type='text'
 						name='user_name'
 						placeholder='Jane Doe'
 					/>
 				</label>
 
-				<label className='mb-1 inline-flex flex-col text-slate-400'>
-					{i18n.EMAIL}*
+				<label className='inline-flex flex-col gap-2'>
+					<span className='text-sm font-semibold text-primary'>{i18n.EMAIL}*</span>
 					<input
 						required
 						autoComplete='email'
-						className='h-10 rounded-lg bg-accent/10 p-2 text-primary outline-none transition-all placeholder:text-slate-500 focus:outline-1 focus:outline-main'
+						className='h-12 rounded-xl border border-accent/20 bg-back/50 px-4 text-primary outline-none transition-all duration-300 placeholder:text-secondary/50 focus:border-accent/60 focus:bg-back/70 focus:ring-2 focus:ring-accent/20'
 						type='email'
 						name='user_email'
 						placeholder={businessEmail}
 					/>
 				</label>
 
-				<label className='mb-1 inline-flex flex-col text-slate-400'>
-					{i18n.MESSAGE}*
+				<label className='inline-flex flex-col gap-2'>
+					<span className='text-sm font-semibold text-primary'>{i18n.MESSAGE}*</span>
 					<textarea
 						required
-						className='h-28 rounded-lg bg-accent/10 p-2 text-primary outline-none transition-all placeholder:text-slate-500 focus:outline-1 focus:outline-main'
+						className='min-h-32 rounded-xl border border-accent/20 bg-back/50 p-4 text-primary outline-none transition-all duration-300 placeholder:text-secondary/50 focus:border-accent/60 focus:bg-back/70 focus:ring-2 focus:ring-accent/20 resize-none'
 						name='message'
 						placeholder={i18n.MESSAGE_PLACEHOLDER}
 					></textarea>
@@ -76,14 +76,20 @@ export const SendForm = ({ currentLocale }: { currentLocale?: string }) => {
 
 			<button
 				type='submit'
-				{...(!sending ? {} : { disabled: true })}
-				className={`group relative mt-4 flex w-full flex-row items-center justify-center gap-2 overflow-hidden ${!sending ? 'cursor-pointer text-primary' : 'cursor-not-allowed bg-blue-900 text-slate-400'} ${sending ? '' : 'active:border-accent active:bg-transparent active:text-main sm:hover:border-main sm:hover:text-main'} rounded-xl border border-transparent px-3 py-2 text-lg font-bold transition`}
+				disabled={sending}
+				className={`group relative mt-6 flex w-full flex-row items-center justify-center gap-2 overflow-hidden rounded-xl border px-6 py-3 text-lg font-bold transition-all duration-300 ${
+					!sending
+						? 'cursor-pointer border-accent/30 bg-gradient-to-r from-main to-accent text-primary shadow-lg shadow-accent/20 hover:scale-105 hover:border-accent/60 hover:shadow-xl hover:shadow-accent/30 active:scale-95'
+						: 'cursor-not-allowed border-accent/10 bg-back/50 text-secondary'
+				}`}
 			>
 				<span
-					className={`absolute left-0 h-full w-full -skew-x-3 bg-main transition-all duration-300 ease-in-out group-active:w-0 sm:group-hover:w-0 ${sending ? 'hidden' : ''}`}
+					className={`absolute inset-0 bg-gradient-to-r from-accent to-main opacity-0 transition-opacity duration-300 ${
+						sending ? '' : 'group-hover:opacity-100'
+					}`}
 				></span>
 
-				<span className='relative'>
+				<span className='relative z-10 flex items-center gap-2'>
 					{!sending ? (
 						<svg
 							className='size-5'
@@ -103,8 +109,8 @@ export const SendForm = ({ currentLocale }: { currentLocale?: string }) => {
 					) : (
 						<Loading classes='size-5' />
 					)}
+					{`${!sending ? i18n.SEND : i18n.SENDING}`}
 				</span>
-				<span className='relative'>{`${!sending ? i18n.SEND : i18n.SENDING}`}</span>
 			</button>
 		</form>
 	)

@@ -26,7 +26,6 @@ interface Props {
 }
 
 const { title, description, preload, canonical, image } = Astro.props
-const publishableKey = import.meta.env.PUBLIC_CLERK_PUBLISHABLE_KEY
 
 const currentLocale = Astro.currentLocale
 const i18n = getI18N({ currentLocale })
@@ -78,7 +77,7 @@ const i18n = getI18N({ currentLocale })
 
 			<SectionContainer
 				id='contact'
-				class='section relative w-full bg-black/50 px-4 py-20 pt-28 sm:px-6 lg:px-8'
+				class='section relative w-full bg-gradient-to-b from-back via-back/80 to-back px-4 py-20 pt-20 sm:px-6 sm:pt-24 lg:px-8 lg:pt-28'
 			>
 				<Contact />
 			</SectionContainer>
@@ -91,9 +90,14 @@ const i18n = getI18N({ currentLocale })
 <style is:global>
 	html {
 		font-family: 'Onest Variable', 'Ubuntu', system-ui, sans-serif;
-		background-color: #000;
+		background: linear-gradient(180deg, #0a0e27 0%, #1a1f3a 50%, #0a0e27 100%);
 		scroll-behavior: smooth;
-		scrollbar-gutter: stable;
+		color: #f8fafc;
+	}
+
+	body {
+		background: linear-gradient(180deg, #0a0e27 0%, #1a1f3a 50%, #0a0e27 100%);
+		min-height: 100vh;
 	}
 
 	code {
@@ -116,35 +120,30 @@ const i18n = getI18N({ currentLocale })
 		filter: invert();
 	}
 
-	::-webkit-scrollbar-thumb {
-		background-color: #3b82f6;
-	}
-
-	::-webkit-scrollbar {
-		width: 8px;
-	}
-
-	::-webkit-scrollbar-track {
-		background: #000;
-	}
-
 	@media (prefers-reduced-motion: reduce) {
 		html {
 			scroll-behavior: auto;
+		}
+		*,
+		*::before,
+		*::after {
+			animation-duration: 0.01ms !important;
+			animation-iteration-count: 1 !important;
+			transition-duration: 0.01ms !important;
 		}
 	}
 
 	.fade-up-anim {
 		animation: fade-up-animation linear both;
 		animation-timeline: view();
-		animation-range: entry 10% cover 20%;
+		animation-range: entry 5% cover 25%;
 	}
 
 	@keyframes fade-up-animation {
 		0% {
 			opacity: 0;
-			translate: 0 50px;
-			scale: 0.7;
+			translate: 0 60px;
+			scale: 0.9;
 		}
 
 		100% {
@@ -157,14 +156,14 @@ const i18n = getI18N({ currentLocale })
 	.fade-left-anim {
 		animation: fade-left-animation linear both;
 		animation-timeline: view();
-		animation-range: entry 10% cover 20%;
+		animation-range: entry 5% cover 25%;
 	}
 
 	@keyframes fade-left-animation {
 		0% {
 			opacity: 0;
-			translate: 50px 0;
-			scale: 0.7;
+			translate: 60px 0;
+			scale: 0.9;
 		}
 
 		100% {
@@ -177,14 +176,14 @@ const i18n = getI18N({ currentLocale })
 	.fade-right-anim {
 		animation: fade-right-animation linear both;
 		animation-timeline: view();
-		animation-range: entry 10% cover 20%;
+		animation-range: entry 5% cover 25%;
 	}
 
 	@keyframes fade-right-animation {
 		0% {
 			opacity: 0;
-			translate: -50px 0;
-			scale: 0.7;
+			translate: -60px 0;
+			scale: 0.9;
 		}
 
 		100% {
@@ -196,5 +195,33 @@ const i18n = getI18N({ currentLocale })
 
 	.mask-image {
 		mask-image: linear-gradient(to bottom, #000 50%, transparent 100%);
+	}
+
+	/* Glass morphism effect */
+	.glass {
+		background: rgba(255, 255, 255, 0.05);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+	}
+
+	.glass-strong {
+		background: rgba(255, 255, 255, 0.1);
+		backdrop-filter: blur(20px);
+		-webkit-backdrop-filter: blur(20px);
+		border: 1px solid rgba(255, 255, 255, 0.2);
+	}
+
+	/* Gradient text */
+	.gradient-text {
+		background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #8b5cf6 100%);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+	}
+
+	/* Smooth transitions */
+	* {
+		transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 	}
 </style>

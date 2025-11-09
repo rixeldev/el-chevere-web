@@ -3,9 +3,30 @@ import { getI18N } from '@/languages/index'
 import { FilledStar } from '@/icons/FilledStar'
 import { Loading } from '@/icons/Loading'
 import { useReviews } from '@/hooks/useReviews'
+import { useAuth } from '@/hooks/useAuth'
 import { useRef } from 'preact/hooks'
 import { useState } from 'preact/hooks'
 import type { JSX } from 'preact'
+
+// Helper function to get image URL - uses proxy for external images
+const getImageUrl = (imageUrl: string): string => {
+	if (!imageUrl) return '/statics/user.svg'
+
+	// If it's already a local image, return as is
+	if (imageUrl.startsWith('/') || imageUrl.startsWith('data:')) {
+		return imageUrl
+	}
+
+	// If it's an external URL (like Google images), use proxy
+	try {
+		new URL(imageUrl) // Validate URL format
+		// Use proxy for external images to avoid CORB issues
+		return `/api/proxy-image?url=${encodeURIComponent(imageUrl)}`
+	} catch {
+		// If URL parsing fails, return fallback
+		return '/statics/user.svg'
+	}
+}
 
 export const Reviews = ({ currentLocale }: { currentLocale?: string }) => {
 	const i18n = getI18N({ currentLocale })
@@ -16,14 +37,16 @@ export const Reviews = ({ currentLocale }: { currentLocale?: string }) => {
 		reviewsCount,
 		sending,
 		loading,
+		loadingMore,
 		reviewsShowing,
-		setReviewsShowing,
 		sendReview,
+		loadMoreReviews,
 	} = useReviews()
+	const { user, loading: authLoading } = useAuth()
 
 	const handleSubmit = async (event: JSX.TargetedEvent<HTMLFormElement, Event>) => {
 		event.preventDefault()
-		if (sending) return
+		if (sending || !user) return
 
 		const { elements } = event.currentTarget
 		const reviewTitleInput = elements.namedItem('review_title') as HTMLInputElement
@@ -31,11 +54,11 @@ export const Reviews = ({ currentLocale }: { currentLocale?: string }) => {
 
 		sendReview(
 			{
-				username: 'User',
+				username: user.email?.split('@')[0] || 'User',
 				title: reviewTitleInput.value,
 				description: messageInput.value,
 				rating: rating,
-				image: '/statics/user.svg',
+				image: user.user_metadata?.avatar_url || '/statics/user.svg',
 			},
 			currentLocale,
 			() => {
@@ -54,13 +77,28 @@ export const Reviews = ({ currentLocale }: { currentLocale?: string }) => {
 
 	return (
 		<div className='flex flex-col gap-12'>
-			<div>
-				<form className='flex flex-col gap-2' ref={formRef} onSubmit={handleSubmit}>
-					<label className='mb-1 inline-flex flex-col text-slate-400'>
-						Title*
+			{!authLoading && !user && (
+				<div className='rounded-2xl border border-accent/10 bg-glass p-6 shadow-lg backdrop-blur-md'>
+					<p className='mb-4 text-center text-primary'>
+						{i18n.SIGN_IN_TO_REVIEW || 'Please sign in to submit a review'}
+					</p>
+					<a
+						href='/auth'
+						className='group relative mx-auto flex w-full max-w-xs flex-row items-center justify-center gap-2 overflow-hidden rounded-xl border border-accent/30 bg-gradient-to-r from-main to-accent px-6 py-3 text-lg font-bold text-primary shadow-lg shadow-accent/20 transition-all duration-300 hover:scale-105 hover:border-accent/60 hover:shadow-xl hover:shadow-accent/30 active:scale-95'
+					>
+						{i18n.SIGN_IN || 'Sign In'}
+					</a>
+				</div>
+			)}
+
+			{!authLoading && user && (
+				<div className='rounded-2xl border border-accent/10 bg-glass p-6 shadow-lg backdrop-blur-md'>
+					<form className='flex flex-col gap-4' ref={formRef} onSubmit={handleSubmit}>
+					<label className='inline-flex flex-col gap-2'>
+						<span className='text-sm font-semibold text-primary'>Title*</span>
 						<input
 							required
-							className='h-10 rounded-lg bg-accent/10 p-2 text-primary outline-none transition-all placeholder:text-slate-500 focus:outline-1 focus:outline-main'
+							className='h-12 rounded-xl border border-accent/20 bg-back/50 px-4 text-primary outline-none transition-all duration-300 placeholder:text-secondary/50 focus:border-accent/60 focus:bg-back/70 focus:ring-2 focus:ring-accent/20'
 							type='text'
 							name='review_title'
 							placeholder='Title'
@@ -68,52 +106,49 @@ export const Reviews = ({ currentLocale }: { currentLocale?: string }) => {
 						/>
 					</label>
 
-					<label className='mb-1 inline-flex flex-col text-slate-400'>
-						{i18n.MESSAGE}*
+					<label className='inline-flex flex-col gap-2'>
+						<span className='text-sm font-semibold text-primary'>{i18n.MESSAGE}*</span>
 						<textarea
 							required
-							className='h-28 rounded-lg bg-accent/10 p-2 text-primary outline-none transition-all placeholder:text-slate-500 focus:outline-1 focus:outline-main'
+							className='min-h-28 resize-none rounded-xl border border-accent/20 bg-back/50 p-4 text-primary outline-none transition-all duration-300 placeholder:text-secondary/50 focus:border-accent/60 focus:bg-back/70 focus:ring-2 focus:ring-accent/20'
 							name='review_message'
 							placeholder={i18n.MESSAGE_PLACEHOLDER}
 						></textarea>
 					</label>
 
-					<label className='mb-1 inline-flex flex-col text-slate-400'>
-						{i18n.RATING}*
-						<div className='flex items-center space-x-1 rtl:space-x-reverse'>
-							<FilledStar
-								onClick={() => handleRatingClick(1)}
-								classes={`size-4 text-slate-600 transition-colors cursor-pointer hover:text-yellow-300 ${rating >= 1 ? 'text-yellow-300' : ''}`}
-							/>
-							<FilledStar
-								onClick={() => handleRatingClick(2)}
-								classes={`size-4 text-slate-600 transition-colors cursor-pointer hover:text-yellow-300 ${rating >= 2 ? 'text-yellow-300' : ''}`}
-							/>
-							<FilledStar
-								onClick={() => handleRatingClick(3)}
-								classes={`size-4 text-slate-600 transition-colors cursor-pointer hover:text-yellow-300 ${rating >= 3 ? 'text-yellow-300' : ''}`}
-							/>
-							<FilledStar
-								onClick={() => handleRatingClick(4)}
-								classes={`size-4 text-slate-600 transition-colors cursor-pointer hover:text-yellow-300 ${rating >= 4 ? 'text-yellow-300' : ''}`}
-							/>
-							<FilledStar
-								onClick={() => handleRatingClick(5)}
-								classes={`size-4 text-slate-600 transition-colors cursor-pointer hover:text-yellow-300 ${rating >= 5 ? 'text-yellow-300' : ''}`}
-							/>
+					<div className='inline-flex flex-col gap-2'>
+						<span className='text-sm font-semibold text-primary'>{i18n.RATING}*</span>
+						<div className='flex items-center gap-1'>
+							{[1, 2, 3, 4, 5].map((star) => (
+								<FilledStar
+									key={star}
+									onClick={() => handleRatingClick(star)}
+									classes={`size-6 transition-all duration-300 cursor-pointer hover:scale-110 ${
+										rating >= star
+											? 'text-warning drop-shadow-lg'
+											: 'text-secondary/40 hover:text-warning/60'
+									}`}
+								/>
+							))}
 						</div>
-					</label>
+					</div>
 
 					<button
 						type='submit'
-						{...(!sending ? {} : { disabled: true })}
-						className={`group relative mt-4 flex w-full max-w-min flex-row items-center justify-center gap-2 overflow-hidden ${!sending ? 'cursor-pointer text-primary' : 'cursor-not-allowed bg-blue-900 text-slate-400'} ${sending ? '' : 'active:border-accent active:bg-transparent active:text-main sm:hover:border-main sm:hover:text-main'} rounded-xl border border-transparent px-4 py-2 text-lg font-bold transition`}
+						disabled={sending}
+						className={`group relative mt-2 flex w-full max-w-xs flex-row items-center justify-center gap-2 overflow-hidden rounded-xl border px-6 py-3 text-lg font-bold transition-all duration-300 ${
+							!sending
+								? 'cursor-pointer border-accent/30 bg-gradient-to-r from-main to-accent text-primary shadow-lg shadow-accent/20 hover:scale-105 hover:border-accent/60 hover:shadow-xl hover:shadow-accent/30 active:scale-95'
+								: 'cursor-not-allowed border-accent/10 bg-back/50 text-secondary'
+						}`}
 					>
 						<span
-							className={`absolute left-0 h-full w-full -skew-x-3 bg-main transition-all duration-300 ease-in-out group-active:w-0 sm:group-hover:w-0 ${sending ? 'hidden' : ''}`}
+							className={`absolute inset-0 bg-gradient-to-r from-accent to-main opacity-0 transition-opacity duration-300 ${
+								sending ? '' : 'group-hover:opacity-100'
+							}`}
 						></span>
 
-						<span className='relative'>
+						<span className='relative z-10 flex items-center gap-2'>
 							{!sending ? (
 								<svg
 									className='size-5'
@@ -133,69 +168,86 @@ export const Reviews = ({ currentLocale }: { currentLocale?: string }) => {
 							) : (
 								<Loading classes='size-5' />
 							)}
+							{`${!sending ? i18n.SEND : i18n.SENDING}`}
 						</span>
-						<span className='relative'>{`${!sending ? i18n.SEND : i18n.SENDING}`}</span>
 					</button>
 				</form>
-			</div>
+				</div>
+			)}
 
 			<div className='flex flex-col gap-6'>
-				<h2 className='font-bold text-primary'>
+				<h2 className='text-2xl font-bold text-primary lg:text-3xl'>
 					{i18n.COSTUMERS_REVIEWS}{' '}
 					{reviewsCount > 0 && (
-						<span className='font-normal text-secondary/50'>(+{reviewsCount})</span>
+						<span className='font-normal text-secondary/70'>(+{reviewsCount})</span>
 					)}
 				</h2>
 
-				{loading && <Loading classes='size-8 mx-auto text-primary' />}
+				{loading && <Loading classes='size-8 mx-auto text-accent' />}
 
 				{allReviews.length > 0 &&
 					!loading &&
 					allReviews.map((review) => (
-						<article key={review.id} className='flex flex-col gap-2 rounded-lg bg-accent/5 p-4'>
-							<div className='mb-4 flex items-center'>
+						<article
+							key={review.id}
+							className='group flex flex-col gap-3 rounded-2xl border border-accent/10 bg-glass p-6 shadow-lg backdrop-blur-md transition-all duration-300 hover:border-accent/20 hover:shadow-xl hover:shadow-accent/10'
+						>
+							<div className='flex items-center gap-4'>
 								<img
-									className='me-4 size-10 rounded-full'
-									src={review.image}
+									className='size-12 rounded-full border-2 border-accent/20 object-cover transition-all duration-300 group-hover:scale-105 group-hover:border-accent/40'
+									src={getImageUrl(review.image)}
 									alt={review.username}
 									loading='lazy'
 									decoding='async'
+									onError={(e) => {
+										const target = e.target as HTMLImageElement
+										// Fallback to default user icon if image fails to load
+										if (!target.src.includes('/statics/user.svg')) {
+											target.src = '/statics/user.svg'
+											target.onerror = null // Prevent infinite loop
+										}
+									}}
 								/>
-								<div className='font-medium text-primary'>
-									<p>{review.username}</p>
+								<div className='flex-1'>
+									<p className='font-semibold text-primary'>{review.username}</p>
+									<div className='mt-1 flex items-center gap-1'>
+										{[1, 2, 3, 4, 5].map((star) => (
+											<FilledStar
+												key={star}
+												classes={`size-4 ${
+													review.rating >= star
+														? 'text-warning drop-shadow-md'
+														: 'text-secondary/30'
+												}`}
+											/>
+										))}
+										<h3 className='ml-2 text-base font-semibold text-primary'>{review.title}</h3>
+									</div>
 								</div>
 							</div>
-							<div className='mb-1 flex items-center space-x-1 rtl:space-x-reverse'>
-								<FilledStar
-									classes={`size-4 ${review.rating >= 1 ? 'text-yellow-300' : 'text-slate-600'}`}
-								/>
-								<FilledStar
-									classes={`size-4 ${review.rating >= 2 ? 'text-yellow-300' : 'text-slate-600'}`}
-								/>
-								<FilledStar
-									classes={`size-4 ${review.rating >= 3 ? 'text-yellow-300' : 'text-slate-600'}`}
-								/>
-								<FilledStar
-									classes={`size-4 ${review.rating >= 4 ? 'text-yellow-300' : 'text-slate-600'}`}
-								/>
-								<FilledStar
-									classes={`size-4 ${review.rating >= 5 ? 'text-yellow-300' : 'text-slate-600'}`}
-								/>
 
-								<h3 className='ms-2 text-sm font-semibold text-primary'>{review.title}</h3>
-							</div>
-
-							<p className='mb-2 text-slate-400'>&quot;{review.description}&quot;</p>
+							<p className='text-base leading-relaxed text-secondary'>
+								&quot;{review.description}&quot;
+							</p>
 						</article>
 					))}
 			</div>
 
-			{reviewsShowing < reviewsCount && (
+			{allReviews.length < reviewsCount && (
 				<button
-					onClick={() => setReviewsShowing(reviewsShowing + 5)}
-					className='mt-4 w-full rounded-lg px-4 py-2 text-lg font-bold text-primary transition'
+					onClick={loadMoreReviews}
+					disabled={loadingMore}
+					className={`group relative mx-auto mt-4 flex w-full max-w-xs items-center justify-center gap-2 overflow-hidden rounded-xl border border-accent/30 bg-glass px-6 py-3 text-lg font-bold text-primary backdrop-blur-md transition-all duration-300 ${
+						loadingMore
+							? 'cursor-not-allowed opacity-50'
+							: 'hover:scale-105 hover:border-accent/60 hover:bg-accent/10 hover:shadow-lg hover:shadow-accent/20 active:scale-95'
+					}`}
 				>
-					{i18n.SHOW_MORE}
+					<span className='absolute inset-0 bg-gradient-to-r from-accent/0 via-accent/10 to-accent/0 opacity-0 transition-opacity duration-300 group-hover:opacity-100'></span>
+					<span className='relative z-10 flex items-center gap-2'>
+						{loadingMore && <Loading classes='size-5' />}
+						{i18n.SHOW_MORE}
+					</span>
 				</button>
 			)}
 		</div>

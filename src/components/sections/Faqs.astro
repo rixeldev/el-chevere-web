@@ -13,35 +13,35 @@ const faqs = getFaqs(currentLocale)
 <div
 	id='accordion-collapse'
 	data-accordion='collapse'
-	class='flex w-full max-w-4xl flex-col md:w-11/12 lg:w-8/12'
+	class='flex w-full max-w-6xl flex-col md:w-11/12 lg:w-10/12'
 >
 	<MainTitle>
-		<ChatQuestion class='size-8' />
+		<ChatQuestion class='size-8 text-accent' />
 		{i18n.QUESTIONS}
 	</MainTitle>
 
-	<ul class='flex w-full flex-col gap-4 overflow-hidden'>
+	<ul class='mt-8 flex w-full flex-col gap-4 overflow-hidden'>
 		{
 			faqs.slice(0, 7).map((faq, index) => (
-				<li class='border-line overflow-hidden rounded-2xl bg-blue-950/60'>
-					<div class='grid grid-rows-[min-content_0fr] transition-[grid-template-rows] has-[input:checked]:grid-rows-[min-content_1fr]'>
-						<label for={faq.question} class='relative cursor-pointer select-none p-4'>
+				<li class='group overflow-hidden rounded-2xl border border-accent/10 bg-glass backdrop-blur-md transition-all duration-300 hover:border-accent/20 hover:shadow-lg hover:shadow-accent/10'>
+					<div class='grid grid-rows-[min-content_0fr] transition-[grid-template-rows] duration-300 has-[input:checked]:grid-rows-[min-content_1fr]'>
+						<label for={faq.question} class='relative cursor-pointer select-none p-5 transition-colors duration-300 hover:bg-accent/5'>
 							<input checked={index === 0} type='checkbox' id={faq.question} class='peer hidden' />
 							<SemiArrow
 								data-accordion-icon
-								class='absolute right-4 top-1/2 size-4 -translate-y-1/2 rotate-90 text-primary transition-transform peer-checked:rotate-180 peer-checked:text-accent'
+								class='absolute right-5 top-1/2 size-5 -translate-y-1/2 rotate-90 text-accent/60 transition-all duration-300 peer-checked:rotate-180 peer-checked:text-accent'
 								aria-hidden='true'
 							/>
 
-							<h3 class='w-[80%] text-lg font-semibold text-primary transition-colors peer-checked:text-accent'>
+							<h3 class='w-[85%] pr-8 text-lg font-semibold leading-relaxed text-primary transition-colors duration-300 peer-checked:text-accent lg:text-xl'>
 								{faq.question}
 							</h3>
 						</label>
 
-						<div class='overflow-hidden rounded-b-2xl bg-black/30'>
-							<div class='flex flex-col gap-4 p-4'>
+						<div class='overflow-hidden rounded-b-2xl bg-back/30 transition-all duration-300'>
+							<div class='flex flex-col gap-4 p-5 pt-0'>
 								{faq.answers.map((answer) => (
-									<p class='max-w-[78ch] text-pretty text-secondary'>{answer}</p>
+									<p class='max-w-[78ch] text-pretty leading-relaxed text-secondary'>{answer}</p>
 								))}
 							</div>
 						</div>

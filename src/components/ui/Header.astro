@@ -1,33 +1,90 @@
 ---
+import CloseIcon from '@/icons/CloseIcon.astro'
+import Menu from '@/icons/Menu.astro'
 import type { NavItem } from '@/interfaces/navItems'
 import { getI18N } from '@/languages/index.ts'
 import { navItemsProvider } from '@/libs/consts'
+import { AuthButton } from './AuthButton'
 
 const { currentLocale } = Astro
 const i18n = getI18N({ currentLocale })
 const navItems: NavItem[] = navItemsProvider(currentLocale)
 ---
 
-<header class='fixed z-50 flex w-full justify-center'>
+<header class='fixed top-0 z-50 w-full'>
 	<div
 		id='header'
-		class='flex h-auto w-full items-center justify-center overflow-hidden border border-transparent py-4 transition-transform'
+		class='relative flex h-16 w-full items-center justify-between border-b border-transparent px-4 transition-all duration-500 ease-out md:h-20 md:justify-center md:px-6 lg:px-8'
 	>
-		<nav
-			class='flex flex-row items-center justify-center gap-2 text-center font-semibold text-secondary md:gap-4'
+		<!-- Mobile Menu Button -->
+		<button
+			id='mobile-menu-button'
+			aria-label='Toggle menu'
+			aria-expanded='false'
+			class='relative z-50 flex h-10 w-10 items-center justify-center rounded-xl border border-accent/20 bg-glass text-primary transition-all duration-300 hover:border-accent/40 hover:bg-accent/10 md:hidden'
 		>
+			<Menu id='menu-icon' class='size-6 transition-opacity duration-300' />
+			<CloseIcon
+				id='close-icon'
+				class='absolute size-6 opacity-0 transition-opacity duration-300'
+			/>
+		</button>
+
+		<!-- Desktop Navigation -->
+		<nav class='hidden flex-row items-center justify-center gap-2 text-center font-medium md:flex'>
 			{
 				navItems.map((item) => (
 					<a
 						href={item.url}
 						aria-label={item.label}
-						class='inline-flex h-full select-none items-center justify-center gap-2 rounded-3xl border border-transparent p-2 text-center transition-colors hover:bg-secondary/5 md:p-4 md:hover:border-secondary/10'
+						class='group relative inline-flex select-none items-center justify-center gap-2 rounded-xl border border-transparent px-5 py-2.5 text-base transition-all duration-300 hover:border-accent/30 hover:bg-accent/10 hover:text-primary'
 					>
-						<item.icon class='hidden size-6 md:block' />
-						{item.title}
+						<item.icon class='size-5 transition-transform duration-300 group-hover:scale-110' />
+						<span class='relative z-10'>{item.title}</span>
+						<span class='absolute inset-0 rounded-xl bg-gradient-to-r from-accent/0 via-accent/10 to-accent/0 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
 					</a>
 				))
 			}
+			<AuthButton client:load currentLocale={currentLocale} />
+		</nav>
+
+		<!-- Mobile Auth Button -->
+		<div class='md:hidden'>
+			<AuthButton client:load currentLocale={currentLocale} />
+		</div>
+	</div>
+
+	<!-- Mobile Menu Overlay -->
+	<div
+		id='mobile-menu'
+		class='fixed inset-0 z-40 flex -translate-x-full flex-col bg-back/95 backdrop-blur-xl transition-transform duration-300 ease-in-out md:hidden'
+	>
+		<div class='flex h-16 items-center justify-start border-b border-accent/10 px-4'>
+			<button
+				id='mobile-menu-close'
+				aria-label='Close menu'
+				class='flex h-10 w-10 items-center justify-center rounded-xl border border-accent/20 bg-glass text-primary transition-all duration-300 hover:border-accent/40 hover:bg-accent/10'
+			>
+				<CloseIcon class='size-6' />
+			</button>
+		</div>
+
+		<nav class='flex flex-1 flex-col gap-2 px-6 py-8'>
+			{
+				navItems.map((item) => (
+					<a
+						href={item.url}
+						aria-label={item.label}
+						class='group flex items-center gap-4 rounded-xl border border-accent/10 bg-glass p-4 text-lg font-medium text-primary transition-all duration-300 hover:border-accent/30 hover:bg-accent/10 active:scale-95'
+					>
+						<item.icon class='size-6 transition-transform duration-300 group-hover:scale-110' />
+						<span>{item.title}</span>
+					</a>
+				))
+			}
+			<div class='mt-4'>
+				<AuthButton client:load currentLocale={currentLocale} />
+			</div>
 		</nav>
 	</div>
 </header>
@@ -41,7 +98,61 @@ const navItems: NavItem[] = navItemsProvider(currentLocale)
 
 	@keyframes bgBlur {
 		to {
-			@apply border-b-main/30 bg-neutral-950/30 py-2 shadow-md shadow-neutral-950/20 backdrop-blur-lg;
+			@apply border-accent/20 bg-back/90 shadow-xl shadow-back/50 backdrop-blur-xl;
 		}
 	}
+
+	#mobile-menu.menu-open {
+		transform: translateX(0);
+	}
+
+	#menu-icon.menu-open {
+		opacity: 0;
+	}
+
+	#close-icon.menu-open {
+		opacity: 1;
+	}
 </style>
+
+<script>
+	document.addEventListener('astro:page-load', () => {
+		const mobileMenuButton = document.getElementById('mobile-menu-button')
+		const mobileMenu = document.getElementById('mobile-menu')
+		const mobileMenuClose = document.getElementById('mobile-menu-close')
+		const menuIcon = document.getElementById('menu-icon')
+		const closeIcon = document.getElementById('close-icon')
+
+		const openMenu = () => {
+			mobileMenu?.classList.add('menu-open')
+			menuIcon?.classList.add('menu-open')
+			closeIcon?.classList.add('menu-open')
+			document.body.style.overflow = 'hidden'
+		}
+
+		const closeMenu = () => {
+			mobileMenu?.classList.remove('menu-open')
+			menuIcon?.classList.remove('menu-open')
+			closeIcon?.classList.remove('menu-open')
+			document.body.style.overflow = ''
+		}
+
+		mobileMenuButton?.addEventListener('click', openMenu)
+		mobileMenuClose?.addEventListener('click', closeMenu)
+
+		// Close menu when clicking on a link
+		const menuLinks = mobileMenu?.querySelectorAll('a')
+		menuLinks?.forEach((link) => {
+			link.addEventListener('click', () => {
+				setTimeout(closeMenu, 100)
+			})
+		})
+
+		// Close menu when pressing Escape
+		document.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape' && mobileMenu?.classList.contains('menu-open')) {
+				closeMenu()
+			}
+		})
+	})
+</script>

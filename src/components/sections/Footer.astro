@@ -9,17 +9,17 @@ const i18n = getI18N({ currentLocale })
 const links: FooterLink[] = footerLinks()
 ---
 
-<footer class='flex w-full items-center justify-center bg-black'>
-	<div class='flex w-full max-w-4xl flex-col px-4 py-10 sm:px-6 md:w-11/12 lg:w-8/12 lg:px-8'>
+<footer class='flex w-full items-center justify-center border-t border-accent/10 bg-back/50 backdrop-blur-md'>
+	<div class='flex w-full max-w-6xl flex-col px-4 py-12 sm:px-6 md:w-11/12 lg:w-10/12 lg:px-8'>
 		<Divider />
 
 		<div
-			class='flex w-full flex-col-reverse items-center gap-4 md:justify-between md:gap-2 lg:flex-row lg:items-center'
+			class='mt-8 flex w-full flex-col-reverse items-center gap-8 md:justify-between md:gap-4 lg:flex-row lg:items-start'
 		>
 			<a
 				rel='noopener noreferrer'
 				href='https://fotoestudioelchevere.com/'
-				class='order-1 flex max-w-28 items-center justify-center lg:order-none'
+				class='order-1 flex max-w-32 items-center justify-center transition-transform duration-300 hover:scale-105 lg:order-none'
 			>
 				<img
 					src='https://www.fotoestudioelchevere.com/logo-no-name.png'
@@ -27,17 +27,18 @@ const links: FooterLink[] = footerLinks()
 					alt='Logo Foto Estudio El Chévere'
 					loading='lazy'
 					decoding='async'
+					class='filter drop-shadow-lg'
 				/>
 			</a>
 
-			<p class='max-w-md text-pretty text-center text-sm text-slate-400 lg:text-start'>
+			<p class='max-w-lg text-pretty text-center text-sm leading-relaxed text-secondary lg:text-start'>
 				&#169; 2025 Foto Estudio El Chévere. <br />
 				{i18n.FOOTER_TXT_1}
 				<a
 					rel='noopener noreferrer'
 					href='https://rikirilis.com/portfolio'
 					target='_blank'
-					class='font-bold text-accent transition-colors active:text-secondary active:underline sm:hover:text-secondary sm:hover:underline'
+					class='font-bold text-accent underline-offset-4 transition-all duration-300 hover:text-primary hover:underline'
 					>RikiRilis</a
 				>
 				(Rikelvi Capellán García) {i18n.FOOTER_TXT_2}
@@ -45,13 +46,13 @@ const links: FooterLink[] = footerLinks()
 					rel='noopener noreferrer'
 					href='https://astro.build'
 					target='_blank'
-					class='font-bold text-accent transition-colors active:text-secondary active:underline sm:hover:text-secondary sm:hover:underline'
+					class='font-bold text-accent underline-offset-4 transition-all duration-300 hover:text-primary hover:underline'
 					>Astro</a
 				>, <a
 					rel='noopener noreferrer'
 					href='https://tailwindcss.com'
 					target='_blank'
-					class='font-bold text-accent transition-colors active:text-secondary active:underline sm:hover:text-secondary sm:hover:underline'
+					class='font-bold text-accent underline-offset-4 transition-all duration-300 hover:text-primary hover:underline'
 					>Tailwind CSS</a
 				>
 				{i18n.FOOTER_TXT_3}
@@ -59,12 +60,12 @@ const links: FooterLink[] = footerLinks()
 					rel='noopener noreferrer'
 					href='https://vercel.com'
 					target='_blank'
-					class='font-bold text-accent transition-colors active:text-secondary active:underline sm:hover:text-secondary sm:hover:underline'
+					class='font-bold text-accent underline-offset-4 transition-all duration-300 hover:text-primary hover:underline'
 					>Vercel</a
 				>.
 			</p>
 
-			<ul class='flex flex-row items-center gap-x-6'>
+			<ul class='flex flex-row items-center gap-x-4'>
 				{
 					links.map((link) => (
 						<li>
@@ -73,9 +74,9 @@ const links: FooterLink[] = footerLinks()
 								href={link.href}
 								rel='noopener noreferrer'
 								aria-label={link.description}
-								class='inline-block size-9 text-secondary transition-colors hover:scale-125 active:text-accent motion-safe:transition motion-reduce:hover:scale-100 sm:hover:text-accent'
+								class='group inline-flex size-10 items-center justify-center rounded-xl border border-accent/10 bg-glass text-secondary backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:border-accent/30 hover:bg-accent/10 hover:text-accent active:scale-95'
 							>
-								<link.icon class='size-full motion-reduce:duration-0' />
+								<link.icon class='size-5 transition-transform duration-300 group-hover:scale-110' />
 							</a>
 						</li>
 					))
@@ -85,24 +86,24 @@ const links: FooterLink[] = footerLinks()
 
 		<Divider />
 
-		<div class='w-full'>
-			<ul class='flex w-full flex-row items-center justify-center gap-x-2'>
+		<div class='mt-6 w-full'>
+			<ul class='flex w-full flex-row items-center justify-center gap-x-4'>
 				<li>
 					<a
 						href='https://fotoestudioelchevere.com/privacy/'
 						rel='noopener noreferrer'
 						target='_blank'
-						class='text-sm text-secondary/50 transition-colors hover:text-secondary'
+						class='text-sm text-secondary/70 underline-offset-4 transition-all duration-300 hover:text-primary hover:underline'
 						>{i18n.PRIVACY}</a
 					>
 				</li>
-				<li class='pointer-events-auto select-none text-sm text-secondary/50'>|</li>
+				<li class='pointer-events-auto select-none text-sm text-secondary/30'>•</li>
 				<li>
 					<a
 						href='https://fotoestudioelchevere.com/terms/'
 						rel='noopener noreferrer'
 						target='_blank'
-						class='text-sm text-secondary/50 transition-colors hover:text-secondary'>{i18n.TERMS}</a
+						class='text-sm text-secondary/70 underline-offset-4 transition-all duration-300 hover:text-primary hover:underline'>{i18n.TERMS}</a
 					>
 				</li>
 			</ul>

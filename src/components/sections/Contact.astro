@@ -12,55 +12,65 @@ const { currentLocale } = Astro
 const i18n = getI18N({ currentLocale })
 ---
 
-<div class='flex w-full max-w-4xl flex-col md:w-11/12 lg:w-8/12'>
+<div class='flex w-full max-w-6xl flex-col md:w-11/12 lg:w-10/12'>
 	<MainTitle>
-		<Chat class='size-8' />
+		<Chat class='size-8 text-accent' />
 		{i18n.CONTACT}
 	</MainTitle>
 
-	<div class='mt-4 flex w-full flex-col gap-4 sm:flex-row sm:justify-between'>
-		<div class='flex-1'>
-			<p class='mb-6 text-pretty text-slate-400'>
-				<strong class='text-accent'>{i18n.CONTACT_TXT_1}</strong>
-				{i18n.CONTACT_TXT_2}
-				<a
-					rel='noopener noreferrer'
-					href={businessInstagram}
-					target='_blank'
-					class='font-bold text-accent transition-colors active:text-secondary active:underline sm:hover:text-secondary sm:hover:underline'
-					>Instagram</a
-				>
-				{i18n.OR}
-				<a
-					rel='noopener noreferrer'
-					href={businessWhatsApp}
-					target='_blank'
-					class='font-bold text-accent transition-colors active:text-secondary active:underline sm:hover:text-secondary sm:hover:underline'
-					>WhatsApp</a
-				>.
-			</p>
+	<div class='mt-8 flex w-full flex-col gap-8 lg:flex-row lg:justify-between lg:gap-12'>
+		<div class='flex-1 space-y-6'>
+			<div class='space-y-4'>
+				<p class='text-pretty text-lg leading-relaxed text-secondary'>
+					<strong class='text-accent'>{i18n.CONTACT_TXT_1}</strong>
+					{i18n.CONTACT_TXT_2}
+					<a
+						rel='noopener noreferrer'
+						href={businessInstagram}
+						target='_blank'
+						class='font-bold text-accent underline-offset-4 transition-all duration-300 hover:text-primary hover:underline'
+						>Instagram</a
+					>
+					{i18n.OR}
+					<a
+						rel='noopener noreferrer'
+						href={businessWhatsApp}
+						target='_blank'
+						class='font-bold text-accent underline-offset-4 transition-all duration-300 hover:text-primary hover:underline'
+						>WhatsApp</a
+					>.
+				</p>
 
-			<p class='mb-6 text-pretty text-slate-400'>
-				{i18n.CONTACT_TXT_3}
-				<strong class='text-accent'>{i18n.CONTACT_TXT_4}</strong>
-				{i18n.CONTACT_TXT_5}
-			</p>
+				<p class='text-pretty text-lg leading-relaxed text-secondary'>
+					{i18n.CONTACT_TXT_3}
+					<strong class='text-accent'>{i18n.CONTACT_TXT_4}</strong>
+					{i18n.CONTACT_TXT_5}
+				</p>
+			</div>
 
 			<div
-				class='flex h-fit w-fit flex-row items-center justify-center gap-2 rounded-xl bg-accent/10 bg-opacity-20 px-2 text-accent'
+				class='group flex h-fit w-fit flex-row items-center justify-center gap-3 rounded-xl border border-accent/20 bg-glass px-4 py-3 backdrop-blur-md transition-all duration-300 hover:border-accent/40 hover:shadow-lg hover:shadow-accent/20'
 			>
-				<h5 id='email' class='font-bold text-accent'>{email}</h5>
+				<h5 id='email' class='font-semibold text-primary'>{email}</h5>
 
-				<Copy
-					id='copyEmailIcon'
-					class='inline-block h-5 w-5 cursor-pointer transition-transform hover:scale-105 hover:text-slate-400'
-				/>
+				<button
+					id='copyEmailButton'
+					class='relative inline-flex items-center justify-center'
+					aria-label='Copy email'
+				>
+					<Copy
+						id='copyEmailIcon'
+						class='inline-block h-5 w-5 cursor-pointer text-accent transition-all duration-300 hover:scale-110 hover:text-primary'
+					/>
 
-				<Check id='copiedEmailIcon' class='hidden h-5 w-5 text-accent' />
+					<Check id='copiedEmailIcon' class='hidden h-5 w-5 text-success' />
+				</button>
 			</div>
 		</div>
 
-		<SendForm client:visible currentLocale={currentLocale} />
+		<div class='flex-1 lg:max-w-md'>
+			<SendForm client:visible currentLocale={currentLocale} />
+		</div>
 	</div>
 </div>
 
@@ -70,12 +80,13 @@ const i18n = getI18N({ currentLocale })
 	import { $ } from '@/libs/dom-selector.ts'
 
 	document.addEventListener('astro:page-load', () => {
+		const copyEmailButton = $('#copyEmailButton')
 		const copyEmailIcon = $('#copyEmailIcon')
 		const copiedEmailIcon = $('#copiedEmailIcon')
 		const currentLocale = navigator.language.split('-')[0]
 		const i18n = getI18N({ currentLocale })
 
-		copyEmailIcon?.addEventListener('click', () => {
+		copyEmailButton?.addEventListener('click', () => {
 			copyEmailIcon?.classList.remove('inline-block')
 			copyEmailIcon?.classList.add('hidden')
 			copiedEmailIcon?.classList.add('inline-block')

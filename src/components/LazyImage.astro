@@ -2,38 +2,49 @@
 const { src, alt, width, height, className = '' } = Astro.props
 ---
 
-<div class='relative h-auto w-full'>
-	<img
-		loading='lazy'
-		decoding='async'
-		src={src}
-		srcset={src}
-		alt={alt}
-		width={width}
-		height={height}
-		class={className}
-		data-lazy
-	/>
-</div>
+<img
+	loading='lazy'
+	decoding='async'
+	src={src}
+	srcset={src}
+	alt={alt}
+	width={width}
+	height={height}
+	class={`${className}`}
+	data-lazy
+/>
 
-<script type='module'>
-	const observer = new IntersectionObserver(
-		(entries, observer) => {
-			entries.forEach((entry) => {
-				if (entry.isIntersecting) {
-					const img = entry.target
-					img.classList.remove('opacity-0')
-					img.classList.add('opacity-100')
-					observer.unobserve(img)
-				}
-			})
-		},
-		{
-			threshold: 0.1,
-		}
-	)
+<script>
+	document.addEventListener('astro:page-load', () => {
+		const observer = new IntersectionObserver(
+			(entries, observer) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						const img = entry.target as HTMLImageElement
+						// Use style for better compatibility
+						img.style.opacity = '1'
+						observer.unobserve(img)
+					}
+				})
+			},
+			{
+				threshold: 0.1,
+				rootMargin: '50px',
+			}
+		)
 
-	document.querySelectorAll('img[data-lazy]').forEach((img) => {
-		observer.observe(img)
+		// Observe all lazy images
+		document.querySelectorAll('img[data-lazy]').forEach((img) => {
+			// If image is already loaded, show it immediately
+			if ((img as HTMLImageElement).complete) {
+				;(img as HTMLImageElement).style.opacity = '1'
+			} else {
+				observer.observe(img)
+				// Fallback: show image when loaded
+				img.addEventListener('load', () => {
+					;(img as HTMLImageElement).style.opacity = '1'
+				})
+			}
+		})
 	})
 </script>

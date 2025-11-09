@@ -13,25 +13,52 @@ const { id, name, image, description } = Astro.props
 
 <a
 	href={`/portfolio/${id}`}
-	class='group relative overflow-hidden rounded-xl border border-transparent bg-main/10 transition-colors hover:border-main/10'
+	class='group relative block h-full cursor-pointer overflow-hidden rounded-2xl border border-accent/10 bg-back/30 transition-all duration-300 hover:-translate-y-1 hover:border-accent/40 hover:shadow-2xl hover:shadow-accent/30'
 >
-	<div class='relative'>
-		<h4 class='p-2 text-center font-medium text-primary'>{name}</h4>
+	<!-- Image Container with increased height -->
+	<div class='relative h-80 w-full overflow-hidden sm:h-96 lg:h-[28rem] xl:h-[32rem]'>
+		<!-- Image with zoom effect -->
+		<div class='absolute inset-0 overflow-hidden'>
+			<LazyImage
+				src={`https://www.fotoestudioelchevere.com${image}.webp`}
+				alt={description}
+				width={800}
+				height={600}
+				className='h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110'
+			/>
+		</div>
 
-		<LazyImage
-			src={`https://www.fotoestudioelchevere.com${image}.webp`}
-			alt={description}
-			width={800}
-			height={600}
-			className='h-60 w-full object-cover transition-transform group-hover:scale-105 sm:h-64 md:object-top lg:h-80'
-		/>
-
+		<!-- Dark overlay gradient - appears on hover -->
 		<div
-			class='absolute inset-0 flex h-full items-end justify-center transition-colors md:group-hover:bg-black/20'
+			class='pointer-events-none absolute inset-0 bg-gradient-to-t from-back/95 via-back/80 to-back/50 opacity-0 transition-opacity duration-500 ease-in-out group-hover:opacity-100'
 		>
-			<p
-				class='w-full text-pretty bg-gradient-to-t from-back/80 to-transparent px-2 py-4 text-primary transition-all group-hover:translate-y-0 group-hover:opacity-100 md:translate-y-full md:opacity-0'
+		</div>
+
+		<!-- Title bar - visible by default, fades out on hover -->
+		<div
+			class='pointer-events-none absolute bottom-0 left-0 right-0 z-20 transition-all duration-500 ease-in-out'
+		>
+			<div
+				class='bg-gradient-to-t from-back via-back/95 to-transparent p-5 transition-all duration-500 ease-in-out group-hover:translate-y-4 group-hover:opacity-0'
 			>
+				<h4 class='text-center text-xl font-bold text-primary drop-shadow-lg'>
+					{name}
+				</h4>
+			</div>
+		</div>
+
+		<!-- Description content - slides up on hover -->
+		<div
+			class='pointer-events-none absolute bottom-0 left-0 right-0 z-30 flex min-h-[45%] translate-y-full flex-col justify-end space-y-4 bg-gradient-to-t from-back/95 via-back/80 to-transparent p-6 text-center transition-transform duration-500 ease-in-out group-hover:translate-y-0'
+		>
+			<div
+				class='mx-auto h-1 w-20 rounded-full bg-gradient-to-r from-transparent via-accent to-transparent opacity-0 transition-opacity delay-200 duration-500 ease-in-out group-hover:opacity-100'
+			>
+			</div>
+			<h4 class='text-2xl font-bold text-primary drop-shadow-lg'>
+				{name}
+			</h4>
+			<p class='mx-auto max-w-md text-base leading-relaxed text-secondary drop-shadow-md'>
 				{description}
 			</p>
 		</div>

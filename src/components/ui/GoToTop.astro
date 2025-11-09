@@ -4,9 +4,10 @@ import UpArrow from '@/icons/UpArrow.astro'
 
 <a
 	id='go-top-btn'
-	class='group fixed bottom-20 right-4 z-30 flex size-12 cursor-pointer items-center justify-center rounded-xl border border-slate-800 bg-blue-950 text-secondary transition duration-300 active:border-accent active:bg-main active:text-primary md:hover:border-accent md:hover:bg-main md:hover:text-primary'
+	class='group fixed bottom-24 right-5 z-30 flex size-12 cursor-pointer items-center justify-center rounded-2xl border border-accent/30 bg-glass text-accent shadow-lg shadow-accent/20 backdrop-blur-md transition-all duration-300 hover:scale-110 hover:border-accent/50 hover:bg-accent/10 hover:shadow-xl hover:shadow-accent/30 active:scale-95'
+	aria-label='Go to top'
 >
-	<UpArrow class='size-6 transition-transform duration-300 md:rotate-45 md:group-hover:rotate-0' />
+	<UpArrow class='size-6 transition-transform duration-300 group-hover:-translate-y-1' />
 </a>
 
 <style>
@@ -15,7 +16,7 @@ import UpArrow from '@/icons/UpArrow.astro'
 		opacity: 0;
 		animation: visibility linear both;
 		animation-timeline: scroll();
-		animation-range: 0 200px;
+		animation-range: 0 300px;
 	}
 
 	@keyframes visibility {
@@ -31,8 +32,9 @@ import UpArrow from '@/icons/UpArrow.astro'
 
 	document.addEventListener('astro:page-load', () => {
 		const goToTopBtn = $('#go-top-btn') as HTMLAnchorElement
-		goToTopBtn.addEventListener('click', () => {
-			window.scrollTo(0, 0)
+		goToTopBtn.addEventListener('click', (e) => {
+			e.preventDefault()
+			window.scrollTo({ top: 0, behavior: 'smooth' })
 		})
 	})
 </script>

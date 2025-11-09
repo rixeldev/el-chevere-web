@@ -10,21 +10,23 @@ const i18n = getI18N({ currentLocale })
 const categories = getCategories(currentLocale)
 ---
 
-<div class='flex w-full max-w-4xl flex-col md:w-11/12 lg:w-8/12'>
+<div class='flex w-full max-w-6xl flex-col md:w-11/12 lg:w-10/12'>
 	<MainTitle>
-		<PhotoLibrary class='size-8' />
+		<PhotoLibrary class='size-8 text-accent' />
 		{i18n.PORTFOLIO}
 	</MainTitle>
 
-	<div class='mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 md:gap-2 lg:gap-4'>
+	<div class='mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6'>
 		{
-			categories.map((category) => (
-				<CatCard
-					id={category.id}
-					name={category.name}
-					image={category.image}
-					description={category.description}
-				/>
+			categories.map((category, index) => (
+				<div class={`${index === 0 ? 'fade-right-anim' : ''} ${index === 1 ? 'fade-up-anim' : ''} ${index === 2 ? 'fade-left-anim' : ''} ${index > 2 ? 'fade-up-anim' : ''}`}>
+					<CatCard
+						id={category.id}
+						name={category.name}
+						image={category.image}
+						description={category.description}
+					/>
+				</div>
 			))
 		}
 	</div>

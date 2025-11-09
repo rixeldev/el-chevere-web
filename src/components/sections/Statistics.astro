@@ -8,59 +8,78 @@ import { currentYear, photoStyles, satisfiedCustomers, yearsSince } from '@/libs
 const years = currentYear - yearsSince
 ---
 
-<div class='flex w-full max-w-4xl flex-col md:w-11/12 lg:w-8/12'>
+<div class='flex w-full max-w-6xl flex-col md:w-11/12 lg:w-10/12'>
 	<div class='relative flex h-fit w-full items-center justify-center overflow-hidden'>
 		<div
-			class='grid w-full grid-cols-2 justify-items-center gap-x-8 gap-y-12 overflow-hidden sm:w-11/12 md:w-10/12 md:grid-cols-3 lg:w-8/12'
+			class='grid w-full grid-cols-1 justify-items-center gap-6 overflow-hidden sm:grid-cols-2 md:grid-cols-3 lg:gap-8'
 		>
-			<div class='fade-right-anim flex flex-col items-center justify-center gap-4'>
-				<UsersGroup class='size-14 text-white sm:size-16' />
+			<div class='fade-right-anim group relative flex w-full max-w-sm flex-col items-center justify-center gap-4 rounded-2xl border border-accent/10 bg-glass p-8 backdrop-blur-md transition-all duration-500 hover:border-accent/30 hover:shadow-xl hover:shadow-accent/20'>
+				<div class='relative'>
+					<div class='absolute inset-0 rounded-full bg-accent/20 blur-xl opacity-0 transition-opacity duration-500 group-hover:opacity-100'></div>
+					<UsersGroup class='relative size-16 text-accent transition-transform duration-500 group-hover:scale-110 sm:size-20' />
+				</div>
 
 				<span
-					class='numbers text-center text-4xl font-bold tabular-nums tracking-tighter text-primary drop-shadow-lg'
+					class='numbers text-center text-5xl font-bold tabular-nums tracking-tighter text-primary sm:text-6xl'
 				>
 					<Counter client:visible initial={0} final={satisfiedCustomers} />
 				</span>
 
-				<span class='text-center text-xl font-bold text-white'>Clientes <br />satisfechos</span>
+				<span class='text-center text-lg font-semibold text-secondary transition-colors duration-300 group-hover:text-primary sm:text-xl'>
+					Clientes <br />satisfechos
+				</span>
 
-				<span class='h-1 w-full rounded-xl bg-white'></span>
+				<div class='h-1 w-20 rounded-full bg-gradient-to-r from-transparent via-accent to-transparent opacity-50 transition-all duration-500 group-hover:w-32 group-hover:opacity-100'></div>
 			</div>
 
-			<div class='fade-right-anim flex flex-col items-center justify-center gap-4'>
-				<Adjustments class='size-14 text-white sm:size-16' />
+			<div class='fade-up-anim group relative flex w-full max-w-sm flex-col items-center justify-center gap-4 rounded-2xl border border-accent/10 bg-glass p-8 backdrop-blur-md transition-all duration-500 hover:border-accent/30 hover:shadow-xl hover:shadow-accent/20'>
+				<div class='relative'>
+					<div class='absolute inset-0 rounded-full bg-main/20 blur-xl opacity-0 transition-opacity duration-500 group-hover:opacity-100'></div>
+					<Adjustments class='relative size-16 text-main transition-transform duration-500 group-hover:scale-110 sm:size-20' />
+				</div>
 
 				<span
-					class='numbers text-center text-4xl font-bold tabular-nums tracking-tighter text-primary drop-shadow-lg'
+					class='numbers text-center text-5xl font-bold tabular-nums tracking-tighter text-primary sm:text-6xl'
 				>
 					<Counter client:visible initial={0} final={photoStyles} />
 				</span>
 
-				<span class='text-center text-xl font-bold text-white'>Estilos <br />fotográficos</span>
+				<span class='text-center text-lg font-semibold text-secondary transition-colors duration-300 group-hover:text-primary sm:text-xl'>
+					Estilos <br />fotográficos
+				</span>
 
-				<span class='h-1 w-full rounded-xl bg-white'></span>
+				<div class='h-1 w-20 rounded-full bg-gradient-to-r from-transparent via-main to-transparent opacity-50 transition-all duration-500 group-hover:w-32 group-hover:opacity-100'></div>
 			</div>
 
 			<div
-				class='fade-left-anim col-span-2 flex flex-col items-center justify-center gap-4 md:col-span-1'
+				class='fade-left-anim group relative col-span-1 flex w-full max-w-sm flex-col items-center justify-center gap-4 rounded-2xl border border-accent/10 bg-glass p-8 backdrop-blur-md transition-all duration-500 hover:border-accent/30 hover:shadow-xl hover:shadow-accent/20 sm:col-span-2 md:col-span-1'
 			>
-				<Calendar class='size-14 text-white sm:size-16' />
+				<div class='relative'>
+					<div class='absolute inset-0 rounded-full bg-accent/20 blur-xl opacity-0 transition-opacity duration-500 group-hover:opacity-100'></div>
+					<Calendar class='relative size-16 text-accent transition-transform duration-500 group-hover:scale-110 sm:size-20' />
+				</div>
 
 				<span
-					class='numbers text-center text-4xl font-bold tabular-nums tracking-tighter text-primary drop-shadow-lg'
+					class='numbers text-center text-5xl font-bold tabular-nums tracking-tighter text-primary sm:text-6xl'
 				>
 					<Counter client:visible initial={0} final={years} />
 				</span>
 
-				<span class='text-center text-xl font-bold text-white'>Años <br />sirviendo</span>
+				<span class='text-center text-lg font-semibold text-secondary transition-colors duration-300 group-hover:text-primary sm:text-xl'>
+					Años <br />sirviendo
+				</span>
 
-				<span class='h-1 w-full rounded-xl bg-white'></span>
+				<div class='h-1 w-20 rounded-full bg-gradient-to-r from-transparent via-accent to-transparent opacity-50 transition-all duration-500 group-hover:w-32 group-hover:opacity-100'></div>
 			</div>
 		</div>
 	</div>
 </div>
 <style>
 	.numbers {
-		text-shadow: 1px 1px 10px rgba(59, 130, 246, 0.5);
+		background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #8b5cf6 100%);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+		filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.3));
 	}
 </style>
