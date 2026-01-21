@@ -1,11 +1,12 @@
 {
   "HOME": "Home",
+  "EXPLORE": "Explore",
   "BLOG": "Blog",
   "PORTFOLIO": "Portfolio",
   "ABOUT": "About",
   "CONTACT": "Contact",
   "PROJECTS": "Projects",
-  "FOOTER_TXT_1": "Made by",
+  "FOOTER_TXT_1": "Made with ❤️ by",
   "FOOTER_TXT_2": "with",
   "FOOTER_TXT_3": "and more tecnologies, deployed using",
   "CONTACT_TXT_1": "Hey there! 🤗 Thanks for getting here!",

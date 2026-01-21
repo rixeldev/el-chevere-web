@@ -1,10 +1,11 @@
 {
   "HOME": "Inicio",
+  "EXPLORE": "Explorar",
   "BLOG": "Blog",
   "PORTFOLIO": "Catálogo",
   "ABOUT": "Sobre nosotros",
   "CONTACT": "Contacto",
-  "FOOTER_TXT_1": "Hecho por",
+  "FOOTER_TXT_1": "Hecho con ❤️ por",
   "FOOTER_TXT_2": "con",
   "FOOTER_TXT_3": "y más tecnologías, desplegado usando",
   "TECNOLOGIES": "Tecnologías",
