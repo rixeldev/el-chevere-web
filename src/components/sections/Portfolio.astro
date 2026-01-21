@@ -20,7 +20,7 @@ const categories = getCategories(currentLocale)
 		{
 			categories.map((category, index) => (
 				<div
-					class={`${index === 0 ? 'fade-right-anim' : ''} ${index === 1 ? 'fade-up-anim' : ''} ${index === 2 ? 'fade-left-anim' : ''} ${index > 2 ? 'fade-up-anim' : ''}`}
+					class={`${index % 3 === 0 ? 'fade-right-anim' : index % 3 === 1 ? 'fade-up-anim' : 'fade-left-anim'}`}
 				>
 					<CatCard
 						id={category.id}
